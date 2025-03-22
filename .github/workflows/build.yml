@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4  # Updated to latest version
 
       - name: Install Dependencies
         run: |
@@ -28,7 +28,7 @@ jobs:
         run: buildozer -v android debug
 
       - name: Upload APK
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4  # Updated version
         with:
           name: RacingGame-APK
           path: bin/*.apk
