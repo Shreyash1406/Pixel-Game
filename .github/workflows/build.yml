@@ -12,14 +12,27 @@ jobs:
       - name: Install Dependencies
         run: |
           sudo apt update
-          sudo apt install -y git zip openjdk-17-jdk python3-pip
+          sudo apt install -y git zip openjdk-17-jdk python3-pip wget unzip
           pip3 install --upgrade pip setuptools wheel cython buildozer python-for-android kivy kivymd pillow
 
       - name: Install Android SDK & AIDL
         run: |
-          sudo apt install -y android-sdk
+          # Set environment variables
+          export ANDROID_SDK_ROOT=$HOME/android-sdk
+          export PATH=$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:$ANDROID_SDK_ROOT/platform-tools:$PATH
+
+          # Download and install Android SDK command-line tools
+          mkdir -p $ANDROID_SDK_ROOT/cmdline-tools
+          cd $ANDROID_SDK_ROOT/cmdline-tools
+          wget -q https://dl.google.com/android/repository/commandlinetools-linux-10406996_latest.zip -O cmdline-tools.zip
+          unzip -q cmdline-tools.zip
+          mv cmdline-tools latest
+          rm cmdline-tools.zip
+          
+          # Accept Android licenses
           yes | sdkmanager --licenses
-          sdkmanager "platform-tools" "platforms;android-31" "build-tools;31.0.0" "cmdline-tools;latest"
+          
+          # Install necessary SDK components
           sdkmanager "platform-tools" "platforms;android-31" "build-tools;31.0.0" "cmdline-tools;latest"
 
       - name: Modify Buildozer Spec
